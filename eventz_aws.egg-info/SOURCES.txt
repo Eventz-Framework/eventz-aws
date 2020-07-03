@@ -1,0 +1,9 @@
+README.rst
+setup.py
+eventz_aws/__init__.py
+eventz_aws/event_store_json_s3.py
+eventz_aws.egg-info/PKG-INFO
+eventz_aws.egg-info/SOURCES.txt
+eventz_aws.egg-info/dependency_links.txt
+eventz_aws.egg-info/requires.txt
+eventz_aws.egg-info/top_level.txt
