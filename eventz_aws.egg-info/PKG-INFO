@@ -1,11 +1,12 @@
-Metadata-Version: 1.2
+Metadata-Version: 2.1
 Name: eventz-aws
 Version: 0.1.0
-Summary: AWS additions for Eventz framework: an event-centric microframework.
-Home-page: https://github.com/danballance/eventz
+Summary: AWS additions for Eventz framework.
+Home-page: UNKNOWN
 Author: Dan Ballance
 Author-email: work@danballance.uk
-License: MIT
+License: UNKNOWN
 Description: UNKNOWN
 Platform: UNKNOWN
-Requires-Python: >=3.8,<4.0
+Requires-Python: ==3.*,>=3.8.0
+Provides-Extra: dev
