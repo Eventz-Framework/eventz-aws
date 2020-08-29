@@ -2,11 +2,9 @@ from typing import Sequence, Tuple
 
 import boto3
 from botocore.exceptions import ClientError
-
-from eventz.event_store.event_store import EventStore
-from eventz.event_store.event_store_protocol import EventStoreProtocol
+from eventz.event_store import EventStore
 from eventz.messages import Event
-from eventz.protocols import MarshallProtocol
+from eventz.protocols import MarshallProtocol, EventStoreProtocol
 
 
 class EventStoreJsonS3(EventStore, EventStoreProtocol):
