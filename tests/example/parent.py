@@ -18,10 +18,10 @@ class ParentCreated(Event):
         self,
         parent_id: str,
         children: Children,
-        uuid: str = None,
+        msgid: str = None,
         timestamp: datetime = None,
     ):
-        super().__init__(uuid, timestamp)
+        super().__init__(msgid, timestamp)
         self.parent_id: str = parent_id
         self.children: Children = children
 
@@ -33,9 +33,9 @@ class ChildChosen(Event):
         self,
         parent_id: str,
         child: Child,
-        uuid: str = None,
+        msgid: str = None,
         timestamp: datetime = None,
     ):
-        super().__init__(uuid, timestamp)
+        super().__init__(msgid, timestamp)
         self.parent_id: str = parent_id
         self.child: Child = child

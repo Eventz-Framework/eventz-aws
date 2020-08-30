@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "eventz-aws"
-version = "0.2.1"
+version = "0.3.0"
 description = "AWS additions for Eventz framework."
 authors = ["Dan Ballance <work@danballance.uk>"]
 
@@ -8,7 +8,7 @@ authors = ["Dan Ballance <work@danballance.uk>"]
 python = "^3.8"
 immutables = "^0.14"
 boto3 = "^1.14.16"
-eventz = "^0.2.0"
+eventz = "^0.3.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

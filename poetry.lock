@@ -232,7 +232,7 @@ description = "Eventz: an event-centric microframework."
 name = "eventz"
 optional = false
 python-versions = ">=3.8,<4.0"
-version = "0.2.1"
+version = "0.3.0"
 
 [package.dependencies]
 immutables = ">=0.14,<0.15"
@@ -653,8 +653,8 @@ category = "dev"
 description = "A utility library for mocking out the `requests` Python library."
 name = "responses"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "0.11.0"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+version = "0.12.0"
 
 [package.dependencies]
 requests = ">=2.0"
@@ -782,7 +782,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "2f013eb38c94925ade8aa4c6146dc4899a2dc91e7de73941696bd03506877a8a"
+content-hash = "c9ffe39e8dd9efd09e152c548eabdb83e99f5d09a99440a020fa92c947820965"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -939,8 +939,8 @@ ecdsa = [
     {file = "ecdsa-0.14.1.tar.gz", hash = "sha256:64c613005f13efec6541bb0a33290d0d03c27abab5f15fbab20fb0ee162bdd8e"},
 ]
 eventz = [
-    {file = "eventz-0.2.1-py3-none-any.whl", hash = "sha256:06d519fbf11020e097ecb91c7f87bfebda69ffb42fe5337efdbe4d0b3270eaa9"},
-    {file = "eventz-0.2.1.tar.gz", hash = "sha256:12e921aaa27d48e894d98ee812c3c8b3351c8f69c0a48e7ccff9d2242fe9e572"},
+    {file = "eventz-0.3.0-py3-none-any.whl", hash = "sha256:b3400d69adfc1493146861e4bdf0c7a250fbed05c4125e925d1282fe61ba232d"},
+    {file = "eventz-0.3.0.tar.gz", hash = "sha256:637d21a7024cc38221601b509f192a2bf1bb3037be36c8bca06823d6430dec3e"},
 ]
 future = [
     {file = "future-0.18.2.tar.gz", hash = "sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d"},
@@ -1137,8 +1137,8 @@ requests = [
     {file = "requests-2.24.0.tar.gz", hash = "sha256:b3559a131db72c33ee969480840fff4bb6dd111de7dd27c8ee1f820f4f00231b"},
 ]
 responses = [
-    {file = "responses-0.11.0-py2.py3-none-any.whl", hash = "sha256:789e79e8d04b6338b5018d49663e7c8554492ea1469012572aff064cc7bcf4da"},
-    {file = "responses-0.11.0.tar.gz", hash = "sha256:17dcd2facb12182ec353b05b424b2e3f52783f0bf3ad6586e098a11ba75fa666"},
+    {file = "responses-0.12.0-py2.py3-none-any.whl", hash = "sha256:0de50fbf600adf5ef9f0821b85cc537acca98d66bc7776755924476775c1989c"},
+    {file = "responses-0.12.0.tar.gz", hash = "sha256:e80d5276011a4b79ecb62c5f82ba07aa23fb31ecbc95ee7cad6de250a3c97444"},
 ]
 rsa = [
     {file = "rsa-4.6-py3-none-any.whl", hash = "sha256:6166864e23d6b5195a5cfed6cd9fed0fe774e226d8f854fcb23b7bbef0350233"},
