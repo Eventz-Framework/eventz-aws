@@ -1,7 +1,12 @@
 README.rst
 setup.py
 ./eventz_aws/__init__.py
+./eventz_aws/event_publisher.py
+./eventz_aws/event_publisher_dummy.py
 ./eventz_aws/event_store_json_s3.py
+./eventz_aws/socket_client.py
+./eventz_aws/socket_client_dummy.py
+./eventz_aws/types.py
 eventz_aws/__init__.py
 eventz_aws/event_store_json_s3.py
 eventz_aws.egg-info/PKG-INFO
