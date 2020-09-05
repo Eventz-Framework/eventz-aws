@@ -1,6 +1,7 @@
 from typing import Sequence, Tuple
 
 import boto3
+from botocore.config import Config
 from botocore.exceptions import ClientError
 from eventz.event_store import EventStore
 from eventz.messages import Event
@@ -16,16 +17,23 @@ class EventStoreJsonS3(EventStore, EventStoreProtocol):
         recreate_storage: bool = True,
     ):
         self._bucket_name: str = bucket_name
-        self._resource = boto3.resource("s3", region_name=region)
-        self._client = boto3.client("s3", region_name=region)
+        client_config = Config(region_name=region,)
+        self._resource = boto3.resource("s3", region_name=region, config=client_config,)
+        self._client = boto3.client("s3", region_name=region, config=client_config,)
         self._marshall = marshall
         bucket = self._resource.Bucket(self._bucket_name)
         if bucket.creation_date is None:
-            self._resource.create_bucket(Bucket=self._bucket_name)
+            self._resource.create_bucket(
+                Bucket=self._bucket_name,
+                CreateBucketConfiguration={"LocationConstraint": region},
+            )
         elif bucket.creation_date is not None and recreate_storage:
             bucket.objects.all().delete()
             bucket.delete()
-            self._resource.create_bucket(Bucket=self._bucket_name)
+            self._resource.create_bucket(
+                Bucket=self._bucket_name,
+                CreateBucketConfiguration={"LocationConstraint": region},
+            )
 
     def fetch(self, aggregate_id: str) -> Tuple[Event, ...]:
         try:

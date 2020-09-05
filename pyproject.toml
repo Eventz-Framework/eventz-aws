@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "eventz-aws"
-version = "0.4.0"
+version = "0.4.2"
 description = "AWS additions for Eventz framework."
 authors = ["Dan Ballance <work@danballance.uk>"]
 
