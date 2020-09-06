@@ -1,6 +1,7 @@
 from typing import Sequence, Tuple
 
 import boto3
+import botocore
 from botocore.config import Config
 from botocore.exceptions import ClientError
 from eventz.event_store import EventStore
@@ -21,13 +22,14 @@ class EventStoreJsonS3(EventStore, EventStoreProtocol):
         self._resource = boto3.resource("s3", region_name=region, config=client_config,)
         self._client = boto3.client("s3", region_name=region, config=client_config,)
         self._marshall = marshall
-        bucket = self._resource.Bucket(self._bucket_name)
-        if bucket.creation_date is None:
+        bucket_exists = self._bucket_exists()
+        if not bucket_exists:
             self._resource.create_bucket(
                 Bucket=self._bucket_name,
                 CreateBucketConfiguration={"LocationConstraint": region},
             )
-        elif bucket.creation_date is not None and recreate_storage:
+        elif bucket_exists and recreate_storage:
+            bucket = self._resource.Bucket(self._bucket_name)
             bucket.objects.all().delete()
             bucket.delete()
             self._resource.create_bucket(
@@ -50,3 +52,12 @@ class EventStoreJsonS3(EventStore, EventStoreProtocol):
         self._client.put_object(
             Bucket=self._bucket_name, Key=aggregate_id, Body=json_string
         )
+
+    def _bucket_exists(self) -> bool:
+        try:
+            self._resource.meta.client.head_bucket(Bucket=self._bucket_name)
+            return True
+        except botocore.exceptions.ClientError as e:
+            if e.response["Error"]["Code"] != "404":
+                raise e
+            return False
