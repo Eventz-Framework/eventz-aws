@@ -19,14 +19,14 @@ dt_iso1 = "2020-01-02T03:04:05.123456"
 dt_iso2 = "2020-01-02T03:04:06.123456"
 dt1 = datetime(2020, 1, 2, 3, 4, 5, 123456)
 dt2 = datetime(2020, 1, 2, 3, 4, 6, 123456)
+bucket_name = "TestBucket"
+region = "eu-west-1"
 
 
 @mock_s3
 def test_sequence_of_events_can_be_read(
     json_events, parent_created_event, child_chosen_event
 ):
-    bucket_name = "TestBucket"
-    region = "us-east-1"
     store = EventStoreJsonS3(
         bucket_name=bucket_name,
         region=region,
@@ -44,8 +44,6 @@ def test_sequence_of_events_can_be_read(
 def test_new_sequence_of_events_can_be_persisted(
     json_events, parent_created_event, child_chosen_event
 ):
-    bucket_name = "TestBucket"
-    region = "us-east-1"
     store = EventStoreJsonS3(
         bucket_name=bucket_name,
         region=region,
