@@ -2,13 +2,15 @@ import json
 
 import boto3
 from eventz.messages import Event
+from eventz.protocols import MarshallProtocol
 
 from eventz_aws.types import EventPublisherProtocol
 
 
 class EventPublisher(EventPublisherProtocol):
-    def __init__(self, arn: str):
+    def __init__(self, arn: str, marshall: MarshallProtocol):
         self._arn: str = arn
+        self._marshall: MarshallProtocol = marshall
 
     def publish(
         self,
@@ -32,6 +34,6 @@ class EventPublisher(EventPublisherProtocol):
         }
         client.publish(
             TargetArn=self._arn,
-            Message=json.dumps({"default": json.dumps(message)}),
+            Message=json.dumps({"default": self._marshall.to_json(message)}),
             MessageStructure="json",
         )
