@@ -1,10 +1,10 @@
 import json
+from typing import List, Optional, Tuple
 
 import boto3
-from eventz.messages import Event
 from eventz.protocols import MarshallProtocol
 
-from eventz_aws.types import EventPublisherProtocol
+from eventz_aws.types import EventPublisherProtocol, Payload
 
 
 class EventPublisher(EventPublisherProtocol):
@@ -14,23 +14,28 @@ class EventPublisher(EventPublisherProtocol):
 
     def publish(
         self,
-        connection_id: str,
+        subscribers: Tuple[str],
+        message_type: str,
         route: str,
         msgid: str,
         dialog: str,
         seq: int,
-        event: Event,
+        options: Optional[Tuple[str]],
+        payload: Payload,
     ) -> None:
+        options = options or []
         client = boto3.client("sns")
         message = {
             "transport": {
-                "connection_id": connection_id,
+                "subscribers": List[str],
+                "type": message_type,
                 "route": route,
                 "msgid": msgid,
                 "dialog": dialog,
                 "seq": seq,
             },
-            "event": event,
+            "options": options,
+            "payload": payload,
         }
         client.publish(
             TargetArn=self._arn,

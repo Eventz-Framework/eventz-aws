@@ -1,4 +1,6 @@
-from eventz_aws.types import SocketClientProtocol
+from typing import Optional, List
+
+from eventz_aws.types import SocketClientProtocol, Payload
 
 
 class SocketClientDummy(SocketClientProtocol):
@@ -10,5 +12,7 @@ class SocketClientDummy(SocketClientProtocol):
         msgid: str,
         dialog: str,
         seq: int,
+        options: Optional[List[str]] = None,
+        payload: Optional[Payload] = None,
     ) -> None:
         pass
