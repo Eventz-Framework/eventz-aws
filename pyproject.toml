@@ -8,7 +8,9 @@ authors = ["Dan Ballance <work@danballance.uk>"]
 python = "^3.8"
 immutables = "^0.14"
 boto3 = "^1.14.16"
-eventz = "^0.3.0"
+#eventz = "^0.3.0"
+eventz = {git = "ssh://git@github.com/Eventz-Framework/eventz.git", branch = "develop"}
+boto3-stubs = "^1.15.11"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
