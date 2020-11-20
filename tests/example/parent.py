@@ -12,30 +12,30 @@ class Parent(Entity):
 
 
 class ParentCreated(Event):
-    version: int = 1
+    __version__: int = 1
 
     def __init__(
         self,
         parent_id: str,
         children: Children,
-        msgid: str = None,
-        timestamp: datetime = None,
+        __msgid__: str = None,
+        __timestamp__: datetime = None,
     ):
-        super().__init__(msgid, timestamp)
+        super().__init__(__msgid__, __timestamp__)
         self.parent_id: str = parent_id
         self.children: Children = children
 
 
 class ChildChosen(Event):
-    version: int = 1
+    __version__: int = 1
 
     def __init__(
         self,
         parent_id: str,
         child: Child,
-        msgid: str = None,
-        timestamp: datetime = None,
+        __msgid__: str = None,
+        __timestamp__: datetime = None,
     ):
-        super().__init__(msgid, timestamp)
+        super().__init__(__msgid__, __timestamp__)
         self.parent_id: str = parent_id
         self.child: Child = child

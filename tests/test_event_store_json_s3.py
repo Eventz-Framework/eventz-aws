@@ -88,8 +88,8 @@ def parent_created_event():
                 Child(name="Child Three"),
             ],
         ),
-        msgid=msgid1,
-        timestamp=dt1,
+        __msgid__=msgid1,
+        __timestamp__=dt1,
     )
 
 
@@ -98,8 +98,8 @@ def child_chosen_event():
     return ChildChosen(
         parent_id=parent_id1,
         child=Child(name="Child Three"),
-        msgid=msgid2,
-        timestamp=dt2,
+        __msgid__=msgid2,
+        __timestamp__=dt2,
     )
 
 
@@ -109,8 +109,8 @@ def json_events():
         {
             "__fqn__": "tests.ParentCreated",
             "__version__": 1,
-            "msgid": msgid1,
-            "timestamp": {
+            "__msgid__": msgid1,
+            "__timestamp__": {
                 "__codec__": "eventz.marshall.DatetimeCodec",
                 "params": {"timestamp": dt_iso1},
             },
@@ -128,8 +128,8 @@ def json_events():
         {
             "__fqn__": "tests.ChildChosen",
             "__version__": 1,
-            "msgid": msgid2,
-            "timestamp": {
+            "__msgid__": msgid2,
+            "__timestamp__": {
                 "__codec__": "eventz.marshall.DatetimeCodec",
                 "params": {"timestamp": dt_iso2},
             },
