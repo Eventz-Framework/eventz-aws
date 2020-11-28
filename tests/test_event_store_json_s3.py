@@ -4,7 +4,8 @@ from datetime import datetime
 import boto3
 import pytest
 from eventz.aggregate import Aggregate
-from eventz.marshall import Marshall, DatetimeCodec, FqnResolver
+from eventz.marshall import Marshall, FqnResolver
+from eventz.codecs.datetime import Datetime
 from moto import mock_s3
 
 from eventz_aws.event_store_json_s3 import EventStoreJsonS3
@@ -31,7 +32,7 @@ marshall = Marshall(
             "tests.ParentCreated": "tests.example.parent.ParentCreated",
         }
     ),
-    codecs={"eventz.marshall.DatetimeCodec": DatetimeCodec()},
+    codecs={"codecs.eventz.Datetime": Datetime()},
 )
 
 
@@ -111,7 +112,7 @@ def json_events():
             "__version__": 1,
             "__msgid__": msgid1,
             "__timestamp__": {
-                "__codec__": "eventz.marshall.DatetimeCodec",
+                "__codec__": "codecs.eventz.Datetime",
                 "params": {"timestamp": dt_iso1},
             },
             "parent_id": parent_id1,
@@ -130,7 +131,7 @@ def json_events():
             "__version__": 1,
             "__msgid__": msgid2,
             "__timestamp__": {
-                "__codec__": "eventz.marshall.DatetimeCodec",
+                "__codec__": "codecs.eventz.Datetime",
                 "params": {"timestamp": dt_iso2},
             },
             "parent_id": parent_id1,
