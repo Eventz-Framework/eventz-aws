@@ -1,18 +1,8 @@
-from typing import Optional, List
+from eventz.packets import Packet
 
-from eventz_aws.types import SocketClientProtocol, Payload
+from eventz_aws.types import SocketClientProtocol
 
 
 class SocketClientDummy(SocketClientProtocol):
-    def send(
-        self,
-        message_type: str,
-        connection_id: str,
-        route: str,
-        msgid: str,
-        dialog: str,
-        seq: int,
-        options: Optional[List[str]] = None,
-        payload: Optional[Payload] = None,
-    ) -> None:
+    def send(self, connection_id: str, packet: Packet) -> None:
         pass

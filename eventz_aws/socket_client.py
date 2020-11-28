@@ -1,9 +1,9 @@
 import json
-from typing import Optional, List
 
 import boto3
+from eventz.packets import Packet
 
-from eventz_aws.types import SocketClientProtocol, Payload
+from eventz_aws.types import SocketClientProtocol
 
 
 class SocketClient(SocketClientProtocol):
@@ -12,29 +12,19 @@ class SocketClient(SocketClientProtocol):
         self._region: str = region
         self._stage: str = stage
 
-    def send(
-        self,
-        message_type: str,
-        connection_id: str,
-        route: str,
-        msgid: str,
-        dialog: str,
-        seq: int,
-        options: Optional[List[str]] = None,
-        payload: Optional[Payload] = None,
-    ) -> None:
+    def send(self, connection_id: str, packet: Packet) -> None:
         endpoint_url = f"https://{self._api_id}.execute-api.{self._region}.amazonaws.com/{self._stage}"
         message = {
-            "type": message_type,
-            "route": route,
-            "msgid": msgid,
-            "dialog": dialog,
-            "seq": seq,
+            "type": packet.message_type,
+            "route": packet.route,
+            "msgid": packet.msgid,
+            "dialog": packet.dialog,
+            "seq": packet.seq,
         }
-        if options:
-            message["options"] = options
-        if payload:
-            message["payload"] = payload
+        if packet.options:
+            message["options"] = packet.options
+        if packet.payload:
+            message["payload"] = packet.payload
         gateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint_url)
         gateway.post_to_connection(
             ConnectionId=connection_id, Data=bytes(json.dumps(message), "utf-8")
