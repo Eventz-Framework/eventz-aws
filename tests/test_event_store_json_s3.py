@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 import boto3
 import pytest
@@ -16,10 +16,10 @@ from tests.example.parent import ParentCreated, ChildChosen
 parent_id1 = Aggregate.make_id()
 msgid1 = "11111111-1111-1111-1111-111111111111"
 msgid2 = "22222222-2222-2222-2222-222222222222"
-dt_iso1 = "2020-01-02T03:04:05.123456"
-dt_iso2 = "2020-01-02T03:04:06.123456"
-dt1 = datetime(2020, 1, 2, 3, 4, 5, 123456)
-dt2 = datetime(2020, 1, 2, 3, 4, 6, 123456)
+dt_iso1 = "2020-01-02T03:04:05.123Z"
+dt_iso2 = "2020-01-02T03:04:06.123Z"
+dt1 = datetime(2020, 1, 2, 3, 4, 5, 123000, tzinfo=timezone.utc)
+dt2 = datetime(2020, 1, 2, 3, 4, 6, 123000, tzinfo=timezone.utc)
 bucket_name = "TestBucket"
 region = "eu-west-1"
 marshall = Marshall(

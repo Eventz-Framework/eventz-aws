@@ -479,7 +479,7 @@ immutables = "^0.14"
 python-dateutil = "^2.8.1"
 
 [package.source]
-reference = "87a16adfcc430c95cdf1f14fbd7ce892f19060bc"
+reference = "3cd9917c819d8e831bc399bbbbbb36c4f6d4cb96"
 type = "git"
 url = "ssh://git@github.com/Eventz-Framework/eventz.git"
 [[package]]
