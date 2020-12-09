@@ -48,7 +48,8 @@ class EventStoreJsonS3(EventStore, EventStoreProtocol):
         return tuple(self._marshall.from_json(json_string))
 
     def persist(self, aggregate_id: str, events: Sequence[Event]) -> None:
-        json_string = self._marshall.to_json(events)
+        existing_events = self.fetch(aggregate_id)
+        json_string = self._marshall.to_json(existing_events + tuple(events))
         self._client.put_object(
             Bucket=self._bucket_name, Key=aggregate_id, Body=json_string
         )

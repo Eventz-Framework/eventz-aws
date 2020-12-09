@@ -16,10 +16,16 @@ from tests.example.parent import ParentCreated, ChildChosen
 parent_id1 = Aggregate.make_id()
 msgid1 = "11111111-1111-1111-1111-111111111111"
 msgid2 = "22222222-2222-2222-2222-222222222222"
+msgid3 = "33333333-3333-3333-3333-333333333333"
+msgid4 = "44444444-4444-4444-4444-444444444444"
 dt_iso1 = "2020-01-02T03:04:05.123Z"
 dt_iso2 = "2020-01-02T03:04:06.123Z"
+dt_iso3 = "2020-01-02T03:04:07.123Z"
+dt_iso4 = "2020-01-02T03:04:08.123Z"
 dt1 = datetime(2020, 1, 2, 3, 4, 5, 123000, tzinfo=timezone.utc)
 dt2 = datetime(2020, 1, 2, 3, 4, 6, 123000, tzinfo=timezone.utc)
+dt3 = datetime(2020, 1, 2, 3, 4, 7, 123000, tzinfo=timezone.utc)
+dt4 = datetime(2020, 1, 2, 3, 4, 8, 123000, tzinfo=timezone.utc)
 bucket_name = "TestBucket"
 region = "eu-west-1"
 marshall = Marshall(
@@ -38,7 +44,7 @@ marshall = Marshall(
 
 @mock_s3
 def test_sequence_of_events_can_be_read(
-    json_events, parent_created_event, child_chosen_event
+    json_events, parent_created_event_1, child_chosen_event_1
 ):
     store = EventStoreJsonS3(
         bucket_name=bucket_name,
@@ -54,12 +60,12 @@ def test_sequence_of_events_can_be_read(
         Body=json.dumps(json_events, sort_keys=True, separators=(",", ":")),
     )
     # run test and make assertion
-    assert store.fetch(parent_id1) == (parent_created_event, child_chosen_event)
+    assert store.fetch(parent_id1) == (parent_created_event_1, child_chosen_event_1)
 
 
 @mock_s3
 def test_new_sequence_of_events_can_be_persisted(
-    json_events, parent_created_event, child_chosen_event
+    json_events, parent_created_event_1, child_chosen_event_1
 ):
     store = EventStoreJsonS3(
         bucket_name=bucket_name,
@@ -68,7 +74,7 @@ def test_new_sequence_of_events_can_be_persisted(
         recreate_storage=True,
     )
     assert store.fetch(parent_id1) == ()
-    store.persist(parent_id1, [parent_created_event, child_chosen_event])
+    store.persist(parent_id1, [parent_created_event_1, child_chosen_event_1])
 
     client = boto3.client("s3", region_name=region)
     obj = client.get_object(Bucket=bucket_name, Key=parent_id1)
@@ -77,8 +83,25 @@ def test_new_sequence_of_events_can_be_persisted(
     assert persisted_json == json_events
 
 
+@mock_s3
+def test_two_batches_of_events_can_be_persisted(
+    json_events, parent_created_event_1, child_chosen_event_1, parent_created_event_2, child_chosen_event_2
+):
+    store = EventStoreJsonS3(
+        bucket_name=bucket_name,
+        region=region,
+        marshall=marshall,
+        recreate_storage=True,
+    )
+    assert store.fetch(parent_id1) == ()
+    store.persist(parent_id1, [parent_created_event_1, child_chosen_event_1])
+    assert len(store.fetch(parent_id1)) == 2
+    store.persist(parent_id1, [parent_created_event_2, child_chosen_event_2])
+    assert len(store.fetch(parent_id1)) == 4
+
+
 @pytest.fixture
-def parent_created_event():
+def parent_created_event_1():
     return ParentCreated(
         parent_id=parent_id1,
         children=Children(
@@ -95,12 +118,39 @@ def parent_created_event():
 
 
 @pytest.fixture
-def child_chosen_event():
+def child_chosen_event_1():
     return ChildChosen(
         parent_id=parent_id1,
         child=Child(name="Child Three"),
         __msgid__=msgid2,
         __timestamp__=dt2,
+    )
+
+
+@pytest.fixture
+def parent_created_event_2():
+    return ParentCreated(
+        parent_id=parent_id1,
+        children=Children(
+            name="Group Two",
+            items=[
+                Child(name="Child Four"),
+                Child(name="Child Five"),
+                Child(name="Child TSix"),
+            ],
+        ),
+        __msgid__=msgid3,
+        __timestamp__=dt3,
+    )
+
+
+@pytest.fixture
+def child_chosen_event_2():
+    return ChildChosen(
+        parent_id=parent_id1,
+        child=Child(name="Child Three"),
+        __msgid__=msgid4,
+        __timestamp__=dt4,
     )
 
 
