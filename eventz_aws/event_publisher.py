@@ -1,4 +1,6 @@
 import json
+import logging
+import os
 from typing import List
 
 import boto3
@@ -6,6 +8,9 @@ from eventz.protocols import MarshallProtocol
 from eventz.packets import Packet
 
 from eventz_aws.types import EventPublisherProtocol
+
+log = logging.getLogger(__name__)
+log.setLevel(os.getenv("LOG_LEVEL", "DEBUG"))
 
 
 class EventPublisher(EventPublisherProtocol):
@@ -28,6 +33,7 @@ class EventPublisher(EventPublisherProtocol):
         }
         if packet.payload:
             message["payload"] = packet.payload
+        log.debug(f"EventPublisher.publish message: {message}")
         client.publish(
             TargetArn=self._arn,
             Message=json.dumps({"default": self._marshall.to_json(message)}),
