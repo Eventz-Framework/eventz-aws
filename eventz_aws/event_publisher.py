@@ -22,7 +22,7 @@ class EventPublisher(EventPublisherProtocol):
         client = boto3.client("sns")
         message = {
             "transport": {
-                "subscribers": List[str],
+                "subscribers": packet.subscribers,
                 "type": packet.message_type,
                 "route": packet.route,
                 "msgid": packet.msgid,
