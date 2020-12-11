@@ -15,7 +15,7 @@ readme = ''
 setup(
     long_description=readme,
     name='eventz-aws',
-    version='0.1.0',
+    version='0.5.0',
     description='AWS additions for Eventz framework.',
     python_requires='==3.*,>=3.8.0',
     author='Dan Ballance',
@@ -23,6 +23,7 @@ setup(
     packages=['eventz_aws'],
     package_dir={"": "."},
     package_data={},
-    install_requires=['boto3==1.*,>=1.14.16', 'eventz==0.*,>=0.1.0', 'immutables==0.*,>=0.14.0'],
+    install_requires=['boto3==1.*,>=1.14.16', 'boto3-stubs==1.*,>=1.15.11', 'eventz', 'immutables==0.*,>=0.14.0'],
+    dependency_links=['git+git@github.com:Eventz-Framework/eventz.git@develop#egg=eventz'],
     extras_require={"dev": ["moto==1.*,>=1.3.14", "pytest==5.*,>=5.2.0", "pytest-cover==3.*,>=3.0.0"]},
 )
