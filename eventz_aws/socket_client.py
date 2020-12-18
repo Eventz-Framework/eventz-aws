@@ -5,14 +5,16 @@ import os
 import boto3
 from eventz.packets import Packet
 
-from eventz_aws.types import SocketClientProtocol
+from eventz_aws.socket_client_base import SocketClientBase
+from eventz_aws.types import SocketClientProtocol, SocketStatsProtocol
 
 log = logging.getLogger(__name__)
 log.setLevel(os.getenv("LOG_LEVEL", "DEBUG"))
 
 
-class SocketClient(SocketClientProtocol):
+class SocketClient(SocketClientBase, SocketClientProtocol, SocketStatsProtocol):
     def __init__(self, api_id: str, region: str, stage: str):
+        super().__init__()
         self._api_id: str = api_id
         self._region: str = region
         self._stage: str = stage

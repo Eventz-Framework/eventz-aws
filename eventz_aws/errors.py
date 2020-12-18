@@ -1,0 +1,2 @@
+class PacketNotFound(Exception):
+    pass
