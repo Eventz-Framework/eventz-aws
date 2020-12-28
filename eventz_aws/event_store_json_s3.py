@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Sequence, Tuple
+from typing import Optional, Sequence, Tuple
 
 import boto3
 import botocore
@@ -52,7 +52,7 @@ class EventStoreJsonS3(EventStore, EventStoreProtocol):
             )
             log.debug("Bucket created without error.")
 
-    def fetch(self, aggregate_id: str) -> Tuple[Event, ...]:
+    def fetch(self, aggregate_id: str, msgid: Optional[str] = None) -> Tuple[Event, ...]:
         log.debug(f"EventStoreJsonS3.fetch with aggregate_id={aggregate_id}")
         try:
             obj = self._client.get_object(Bucket=self._bucket_name, Key=aggregate_id)

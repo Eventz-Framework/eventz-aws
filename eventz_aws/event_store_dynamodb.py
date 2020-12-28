@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Sequence, Tuple
+from typing import Optional, Sequence, Tuple
 
 from boto3_type_annotations.dynamodb import Client as DynamoClient
 from eventz.event_store import EventStore
@@ -23,7 +23,7 @@ class EventStoreDynamodb(EventStore, EventStoreProtocol):
         self._table_name: str = table_name
         self._marshall: MarshallProtocol = marshall
 
-    def fetch(self, aggregate_id: str) -> Tuple[Event, ...]:
+    def fetch(self, aggregate_id: str, msgid: Optional[str] = None) -> Tuple[Event, ...]:
         log.debug(
             f"EventStoreDynamodb.fetch with aggregate={self._aggregate} aggregate_id={aggregate_id}"
         )
