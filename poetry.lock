@@ -60,14 +60,14 @@ python-versions = "*"
 
 [[package]]
 name = "boto3"
-version = "1.16.40"
+version = "1.16.44"
 description = "The AWS SDK for Python"
 category = "main"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-botocore = ">=1.19.40,<1.20.0"
+botocore = ">=1.19.44,<1.20.0"
 jmespath = ">=0.7.1,<1.0.0"
 s3transfer = ">=0.3.0,<0.4.0"
 
@@ -340,8 +340,16 @@ workspaces = ["mypy-boto3-workspaces (==1.16.40.0)"]
 xray = ["mypy-boto3-xray (==1.16.40.0)"]
 
 [[package]]
+name = "boto3-type-annotations"
+version = "0.3.1"
+description = "Type annotations for boto3. Adds code completion in IDEs such as PyCharm."
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "botocore"
-version = "1.19.40"
+version = "1.19.44"
 description = "Low-level, data-driven core of boto 3."
 category = "main"
 optional = false
@@ -489,7 +497,7 @@ stringcase = "^1.2.0"
 type = "git"
 url = "ssh://git@github.com/Eventz-Framework/eventz.git"
 reference = "develop"
-resolved_reference = "d3b89290de54860f2491b8563a8e648fa93fba75"
+resolved_reference = "680fd400a4a2f288d4f273a534abd0a62d8a3bff"
 
 [[package]]
 name = "future"
@@ -1018,7 +1026,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "e4ea9b4f6ff70d93fee52db60ff86e396e71d314a073e5b3345a06ede00b0375"
+content-hash = "3574217fa6ef34404facd9a46e846f38e70b2dbd2ea4f12356de86a4ec108ffd"
 
 [metadata.files]
 atomicwrites = [
@@ -1043,16 +1051,20 @@ boto = [
     {file = "boto-2.49.0.tar.gz", hash = "sha256:ea0d3b40a2d852767be77ca343b58a9e3a4b00d9db440efb8da74b4e58025e5a"},
 ]
 boto3 = [
-    {file = "boto3-1.16.40-py2.py3-none-any.whl", hash = "sha256:bbe380ee554cfc998528320578ca2ec152aea3243dd8e82119bc644deb49ec6b"},
-    {file = "boto3-1.16.40.tar.gz", hash = "sha256:75326882aa68e003452dcd8f0fcee0339ff63624115927fb71a6b5d15535ace5"},
+    {file = "boto3-1.16.44-py2.py3-none-any.whl", hash = "sha256:ba8de10d3ede338d51ae47e428b97dcc1d1b507741aa98697e63e879a147f4aa"},
+    {file = "boto3-1.16.44.tar.gz", hash = "sha256:e3f10ed6d9ca98415fdec15c85e50a89ec38d6229bce3fafd5e7965b16c4ebc5"},
 ]
 boto3-stubs = [
     {file = "boto3-stubs-1.16.40.0.tar.gz", hash = "sha256:f091ce38a3832a26eccf3b1bafcd29314ae45aec155f0afde61de5ebb746c110"},
     {file = "boto3_stubs-1.16.40.0-py3-none-any.whl", hash = "sha256:ebc9af0915db857f581c3856a365dd24bdb64cd2c60b67974bb936fd4b312e75"},
 ]
+boto3-type-annotations = [
+    {file = "boto3_type_annotations-0.3.1-py3-none-any.whl", hash = "sha256:52e007ac2ab792abee42aaac3019c2acc9781a84e79e1283a5bc64164225435e"},
+    {file = "boto3_type_annotations-0.3.1.tar.gz", hash = "sha256:e5682093d035e935c8189f24c601ef6eaccedfcd1e642ba7922429d093b1b885"},
+]
 botocore = [
-    {file = "botocore-1.19.40-py2.py3-none-any.whl", hash = "sha256:bb0e4cc5e364785ff8fc380d74ad57dec9857a4093608633616d0acfe84caadc"},
-    {file = "botocore-1.19.40.tar.gz", hash = "sha256:ebfa880ac8cb8132dc6657902bf546f52cf2c43278570f60c8f8a0f894556555"},
+    {file = "botocore-1.19.44-py2.py3-none-any.whl", hash = "sha256:4ff05bc089ba78a5996f06dcfddf8ca51583e30ce779ed95e9952e90c1907420"},
+    {file = "botocore-1.19.44.tar.gz", hash = "sha256:7725e08c95ae96c4dbd955cb4ae44a0c06d3e41f76a7feb0a941c27a44c63113"},
 ]
 certifi = [
     {file = "certifi-2020.12.5-py2.py3-none-any.whl", hash = "sha256:719a74fb9e33b9bd44cc7f3a8d94bc35e4049deebe19ba7d8e108280cfd59830"},

@@ -11,6 +11,7 @@ boto3 = "^1.14.16"
 #eventz = "^0.3.0"
 eventz = {git = "ssh://git@github.com/Eventz-Framework/eventz.git", branch = "develop"}
 boto3-stubs = "^1.15.11"
+boto3-type-annotations = "^0.3.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
