@@ -25,6 +25,7 @@ dt2 = datetime(2020, 1, 2, 3, 4, 6, 123000, tzinfo=timezone.utc)
 dt3 = datetime(2020, 1, 2, 3, 4, 7, 123000, tzinfo=timezone.utc)
 dt4 = datetime(2020, 1, 2, 3, 4, 8, 123000, tzinfo=timezone.utc)
 dynamodb_events_table_name = "Eventz"
+dynamodb_subscriptions_table_name = "Subscriptions"
 
 
 @pytest.fixture
@@ -175,3 +176,23 @@ def dynamodb_connection_with_initial_events(
             },
         )
     yield dynamodb_connection_with_empty_events_table
+
+
+@pytest.fixture()
+def dynamodb_connection_with_empty_subscriptions_table(
+    dynamodb_connection
+):
+    dynamodb_connection.create_table(
+        TableName=dynamodb_subscriptions_table_name,
+        KeySchema=[
+            {"AttributeName": "pk", "KeyType": "HASH"},
+            {"AttributeName": "sk", "KeyType": "RANGE"},
+        ],
+        AttributeDefinitions=[
+            {"AttributeName": "pk", "AttributeType": "S"},
+            {"AttributeName": "sk", "AttributeType": "S"},
+        ],
+        BillingMode="PAY_PER_REQUEST",
+    )
+    yield dynamodb_connection
+    dynamodb_connection.delete_table(TableName=dynamodb_subscriptions_table_name,)
