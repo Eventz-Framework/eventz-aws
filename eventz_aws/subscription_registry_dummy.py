@@ -7,7 +7,7 @@ from typing import Dict, List, Optional, Tuple, TypedDict
 from eventz.protocols import SubscriptionRegistryProtocol
 
 log = logging.getLogger(__name__)
-log.setLevel(os.getenv("LOG_LEVEL", "DEBUG"))
+log.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 
 
 class Registration(TypedDict):

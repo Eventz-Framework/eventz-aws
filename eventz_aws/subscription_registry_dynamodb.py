@@ -7,7 +7,7 @@ from boto3_type_annotations.dynamodb import Client as DynamoClient
 from eventz.protocols import SubscriptionRegistryProtocol
 
 log = logging.getLogger(__name__)
-log.setLevel(os.getenv("LOG_LEVEL", "DEBUG"))
+log.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 
 
 class SubscriptionRegistryDynamodb(SubscriptionRegistryProtocol[str]):
@@ -19,7 +19,7 @@ class SubscriptionRegistryDynamodb(SubscriptionRegistryProtocol[str]):
         self, game_id: str, subscription: str, time: Optional[datetime] = None
     ) -> None:
         time = time or datetime.now(timezone.utc)
-        log.debug(
+        log.info(
             f"SubscriptionRegistryDynamodb.register with game_id={game_id} "
             f"subscription={subscription} time={time}"
         )
@@ -31,10 +31,10 @@ class SubscriptionRegistryDynamodb(SubscriptionRegistryProtocol[str]):
                 "datetime": {"S": time.isoformat()},
             },
         )
-        log.debug("Data put to dynamodb without error.")
+        log.info("Data put to dynamodb without error.")
 
     def fetch(self, game_id: str) -> Tuple[str]:
-        log.debug(
+        log.info(
             f"SubscriptionRegistryDynamodb.fetch with game_id={game_id}"
         )
         response = self._connection.query(
@@ -46,7 +46,7 @@ class SubscriptionRegistryDynamodb(SubscriptionRegistryProtocol[str]):
             ScanIndexForward=False,
             ConsistentRead=True,
         )
-        log.debug(f"Query response:")
-        log.debug(response)
+        log.info(f"Query response:")
+        log.info(response)
         sorted_items = sorted(response["Items"], key=lambda i: i["datetime"]["S"])
         return tuple(str(item["sk"]["S"]) for item in sorted_items)

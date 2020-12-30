@@ -11,7 +11,7 @@ from eventz.messages import Event
 from eventz.protocols import MarshallProtocol, EventStoreProtocol
 
 log = logging.getLogger(__name__)
-log.setLevel(os.getenv("LOG_LEVEL", "DEBUG"))
+log.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 
 
 class EventStoreJsonS3(EventStore, EventStoreProtocol):
@@ -22,7 +22,7 @@ class EventStoreJsonS3(EventStore, EventStoreProtocol):
         marshall: MarshallProtocol,
         recreate_storage: bool = True,
     ):
-        log.debug((
+        log.info((
             f"EventStoreJsonS3.init bucket_name={bucket_name}, "
             f"region={region}, marshall={marshall} recreate_storage={recreate_storage}"
         ))
@@ -33,55 +33,55 @@ class EventStoreJsonS3(EventStore, EventStoreProtocol):
         self._marshall = marshall
         bucket_exists = self._bucket_exists()
         if not bucket_exists:
-            log.debug("Bucket does not exist.")
+            log.info("Bucket does not exist.")
             self._resource.create_bucket(
                 Bucket=self._bucket_name,
                 CreateBucketConfiguration={"LocationConstraint": region},
             )
-            log.debug("Bucket created without error.")
+            log.info("Bucket created without error.")
         elif bucket_exists and recreate_storage:
-            log.debug("Bucket exists.")
+            log.info("Bucket exists.")
             bucket = self._resource.Bucket(self._bucket_name)
             bucket.objects.all().delete()
-            log.debug("Bucket contents deleted.")
+            log.info("Bucket contents deleted.")
             bucket.delete()
-            log.debug("Bucket deleted.")
+            log.info("Bucket deleted.")
             self._resource.create_bucket(
                 Bucket=self._bucket_name,
                 CreateBucketConfiguration={"LocationConstraint": region},
             )
-            log.debug("Bucket created without error.")
+            log.info("Bucket created without error.")
 
     def fetch(self, aggregate_id: str, msgid: Optional[str] = None) -> Tuple[Event, ...]:
-        log.debug(f"EventStoreJsonS3.fetch with aggregate_id={aggregate_id}")
+        log.info(f"EventStoreJsonS3.fetch with aggregate_id={aggregate_id}")
         try:
             obj = self._client.get_object(Bucket=self._bucket_name, Key=aggregate_id)
-            log.debug(f"Bucket object obtained: {obj}")
+            log.info(f"Bucket object obtained: {obj}")
         except ClientError as e:
             if e.response["Error"]["Code"] == "NoSuchKey":
                 return ()
             raise e
         json_string = obj.get("Body").read().decode("utf-8")
-        log.debug(f"JSON read:")
-        log.debug(json_string)
+        log.info(f"JSON read:")
+        log.info(json_string)
         deserialized_json_data = self._marshall.from_json(json_string)
-        log.debug(f"deserialized_json_data:")
-        log.debug(deserialized_json_data)
+        log.info(f"deserialized_json_data:")
+        log.info(deserialized_json_data)
         return tuple(deserialized_json_data)
 
     def persist(self, aggregate_id: str, events: Sequence[Event]) -> None:
-        log.debug(f"EventStoreJsonS3.persist with aggregate_id={aggregate_id} events:")
-        log.debug(events)
+        log.info(f"EventStoreJsonS3.persist with aggregate_id={aggregate_id} events:")
+        log.info(events)
         existing_events = self.fetch(aggregate_id)
-        log.debug(f"existing_events:")
-        log.debug(existing_events)
+        log.info(f"existing_events:")
+        log.info(existing_events)
         json_string = self._marshall.to_json(existing_events + tuple(events))
-        log.debug(f"Combined event data as JSON:")
-        log.debug(json_string)
+        log.info(f"Combined event data as JSON:")
+        log.info(json_string)
         self._client.put_object(
             Bucket=self._bucket_name, Key=aggregate_id, Body=json_string
         )
-        log.debug("Data put to bucket without error.")
+        log.info("Data put to bucket without error.")
 
     def _bucket_exists(self) -> bool:
         try:

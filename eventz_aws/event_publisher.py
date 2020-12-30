@@ -10,7 +10,7 @@ from eventz.packets import Packet
 from eventz_aws.types import EventPublisherProtocol
 
 log = logging.getLogger(__name__)
-log.setLevel(os.getenv("LOG_LEVEL", "DEBUG"))
+log.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 
 
 class EventPublisher(EventPublisherProtocol):
@@ -33,7 +33,7 @@ class EventPublisher(EventPublisherProtocol):
         }
         if packet.payload:
             message["payload"] = packet.payload
-        log.debug(f"EventPublisher.publish message: {message}")
+        log.info(f"EventPublisher.publish message: {message}")
         client.publish(
             TargetArn=self._arn,
             Message=json.dumps({"default": self._marshall.to_json(message)}),

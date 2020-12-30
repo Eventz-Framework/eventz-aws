@@ -8,14 +8,14 @@ from eventz.messages import Event
 from eventz.protocols import MarshallProtocol, EventStoreProtocol
 
 log = logging.getLogger(__name__)
-log.setLevel(os.getenv("LOG_LEVEL", "DEBUG"))
+log.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 
 
 class EventStoreDynamodb(EventStore, EventStoreProtocol):
     def __init__(
         self, aggregate: str, connection: DynamoClient, table_name: str, marshall: MarshallProtocol,
     ):
-        log.debug(
+        log.info(
             f"EventStoreDynamodb.init aggregate={aggregate} connection={connection}, marshall={marshall}"
         )
         self._aggregate: str = aggregate
@@ -24,7 +24,7 @@ class EventStoreDynamodb(EventStore, EventStoreProtocol):
         self._marshall: MarshallProtocol = marshall
 
     def fetch(self, aggregate_id: str, msgid: Optional[str] = None) -> Tuple[Event, ...]:
-        log.debug(
+        log.info(
             f"EventStoreDynamodb.fetch with aggregate={self._aggregate} aggregate_id={aggregate_id}"
         )
         response = self._connection.query(
@@ -36,19 +36,19 @@ class EventStoreDynamodb(EventStore, EventStoreProtocol):
             ScanIndexForward=True,
             ConsistentRead=True,
         )
-        log.debug(f"Query response:")
-        log.debug(response)
+        log.info(f"Query response:")
+        log.info(response)
         return tuple(
             self._marshall.from_json(item["event"]["S"]) for item in response["Items"]
         )
 
     def persist(self, aggregate_id: str, events: Sequence[Event]) -> None:
-        log.debug(
+        log.info(
             f"EventStoreDynamodb.persist with aggregate={self._aggregate} aggregate_id={aggregate_id} events:"
         )
-        log.debug(events)
+        log.info(events)
         sk = self._get_current_sk(aggregate_id)
-        log.debug(f"Current sk is '{sk}'")
+        log.info(f"Current sk is '{sk}'")
         for event in events:
             sk += 1
             self._connection.put_item(
@@ -61,10 +61,10 @@ class EventStoreDynamodb(EventStore, EventStoreProtocol):
                 },
                 ConditionExpression="attribute_not_exists(pk) AND attribute_not_exists(sk)",
             )
-        log.debug("Data put to dynamodb without error.")
+        log.info("Data put to dynamodb without error.")
 
     def _get_current_sk(self, aggregate_id: str) -> int:
-        log.debug(
+        log.info(
             f"EventStoreDynamodb._get_next_sk with aggregate={self._aggregate} aggregate_id={aggregate_id}"
         )
         response = self._connection.query(

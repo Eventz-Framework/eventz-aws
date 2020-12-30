@@ -9,7 +9,7 @@ from eventz_aws.socket_client_base import SocketClientBase
 from eventz_aws.types import SocketClientProtocol, SocketStatsProtocol
 
 log = logging.getLogger(__name__)
-log.setLevel(os.getenv("LOG_LEVEL", "DEBUG"))
+log.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 
 
 class SocketClient(SocketClientBase, SocketClientProtocol, SocketStatsProtocol):
@@ -20,9 +20,9 @@ class SocketClient(SocketClientBase, SocketClientProtocol, SocketStatsProtocol):
         self._stage: str = stage
 
     def send(self, connection_id: str, packet: Packet) -> None:
-        log.debug(f"SocketClient.send connection_id={connection_id} packet={packet}")
+        log.info(f"SocketClient.send connection_id={connection_id} packet={packet}")
         endpoint_url = f"https://{self._api_id}.execute-api.{self._region}.amazonaws.com/{self._stage}"
-        log.debug(f"endpoint_url={endpoint_url}")
+        log.info(f"endpoint_url={endpoint_url}")
         message = {
             "type": packet.message_type,
             "route": packet.route,
@@ -35,7 +35,7 @@ class SocketClient(SocketClientBase, SocketClientProtocol, SocketStatsProtocol):
         if packet.payload:
             message["payload"] = packet.payload
         gateway = boto3.client("apigatewaymanagementapi", endpoint_url=endpoint_url)
-        log.debug(f"message = {message}")
+        log.info(f"message = {message}")
         gateway.post_to_connection(
             ConnectionId=connection_id, Data=bytes(json.dumps(message), "utf-8")
         )
