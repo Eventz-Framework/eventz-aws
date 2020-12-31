@@ -153,7 +153,7 @@ def dynamodb_connection_with_empty_events_table(
         ],
         AttributeDefinitions=[
             {"AttributeName": "pk", "AttributeType": "S"},
-            {"AttributeName": "sk", "AttributeType": "S"},
+            {"AttributeName": "sk", "AttributeType": "N"},
         ],
         BillingMode="PAY_PER_REQUEST",
     )

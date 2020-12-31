@@ -55,7 +55,7 @@ class EventStoreDynamodb(EventStore, EventStoreProtocol):
                 TableName=self._table_name,
                 Item={
                     "pk": {"S": f"{self._aggregate}-{aggregate_id}"},
-                    "sk": {"S": str(sk)},
+                    "sk": {"N": str(sk)},
                     "event": {"S": self._marshall.to_json(event)},
                     "msgid": {"S": event.__msgid__},  # @TODO ensure unique in the table
                 },
@@ -79,4 +79,4 @@ class EventStoreDynamodb(EventStore, EventStoreProtocol):
         )
         if not response["Items"]:
             return 0  # first event
-        return int(response["Items"][0]["sk"]["S"])
+        return int(response["Items"][0]["sk"]["N"])
