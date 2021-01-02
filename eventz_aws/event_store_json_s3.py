@@ -8,7 +8,7 @@ from botocore.config import Config
 from botocore.exceptions import ClientError
 from eventz.event_store import EventStore
 from eventz.messages import Event
-from eventz.protocols import MarshallProtocol, EventStoreProtocol
+from eventz.protocols import Events, MarshallProtocol, EventStoreProtocol
 
 log = logging.getLogger(__name__)
 log.setLevel(os.getenv("LOG_LEVEL", "INFO"))
@@ -52,7 +52,7 @@ class EventStoreJsonS3(EventStore, EventStoreProtocol):
             )
             log.info("Bucket created without error.")
 
-    def fetch(self, aggregate_id: str, msgid: Optional[str] = None) -> Tuple[Event, ...]:
+    def fetch(self, aggregate_id: str, msgid: Optional[str] = None) -> Events:
         log.info(f"EventStoreJsonS3.fetch with aggregate_id={aggregate_id}")
         try:
             obj = self._client.get_object(Bucket=self._bucket_name, Key=aggregate_id)
@@ -67,21 +67,30 @@ class EventStoreJsonS3(EventStore, EventStoreProtocol):
         deserialized_json_data = self._marshall.from_json(json_string)
         log.info(f"deserialized_json_data:")
         log.info(deserialized_json_data)
-        return tuple(deserialized_json_data)
+        return tuple(
+            e.sequence(idx + 1)
+            for idx, e in enumerate(deserialized_json_data)
+        )
 
-    def persist(self, aggregate_id: str, events: Sequence[Event]) -> None:
+    def persist(self, aggregate_id: str, events: Events) -> Events:
         log.info(f"EventStoreJsonS3.persist with aggregate_id={aggregate_id} events:")
         log.info(events)
         existing_events = self.fetch(aggregate_id)
         log.info(f"existing_events:")
         log.info(existing_events)
-        json_string = self._marshall.to_json(existing_events + tuple(events))
+        seq = len(existing_events)
+        new_events = [
+            e.sequence(seq + idx + 1)
+            for idx, e in enumerate(events)
+        ]
+        json_string = self._marshall.to_json(existing_events + tuple(new_events))
         log.info(f"Combined event data as JSON:")
         log.info(json_string)
         self._client.put_object(
             Bucket=self._bucket_name, Key=aggregate_id, Body=json_string
         )
         log.info("Data put to bucket without error.")
+        return tuple(new_events)
 
     def _bucket_exists(self) -> bool:
         try:

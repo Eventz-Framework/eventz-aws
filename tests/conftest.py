@@ -42,6 +42,7 @@ def parent_created_event_1():
         ),
         __msgid__=msgid1,
         __timestamp__=dt1,
+        __seq__=None,
     )
 
 
@@ -52,6 +53,7 @@ def child_chosen_event_1():
         child=Child(name="Child Three"),
         __msgid__=msgid2,
         __timestamp__=dt2,
+        __seq__=None,
     )
 
 
@@ -93,6 +95,7 @@ def json_events():
                 "__codec__": "codecs.eventz.Datetime",
                 "params": {"timestamp": dt_iso1},
             },
+            "__seq__": 1,
             "parentId": parent_id1,
             "children": {
                 "__fqn__": "tests.Children",
@@ -112,6 +115,7 @@ def json_events():
                 "__codec__": "codecs.eventz.Datetime",
                 "params": {"timestamp": dt_iso2},
             },
+            "__seq__": 2,
             "parentId": parent_id1,
             "child": {"__fqn__": "tests.Child", "name": "Child Three",},
         },

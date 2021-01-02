@@ -5,7 +5,7 @@ from typing import Optional, Sequence, Tuple
 from boto3_type_annotations.dynamodb import Client as DynamoClient
 from eventz.event_store import EventStore
 from eventz.messages import Event
-from eventz.protocols import MarshallProtocol, EventStoreProtocol
+from eventz.protocols import Events, MarshallProtocol, EventStoreProtocol
 
 log = logging.getLogger(__name__)
 log.setLevel(os.getenv("LOG_LEVEL", "INFO"))
@@ -42,13 +42,14 @@ class EventStoreDynamodb(EventStore, EventStoreProtocol):
             self._marshall.from_json(item["event"]["S"]) for item in response["Items"]
         )
 
-    def persist(self, aggregate_id: str, events: Sequence[Event]) -> None:
+    def persist(self, aggregate_id: str, events: Events) -> Events:
         log.info(
             f"EventStoreDynamodb.persist with aggregate={self._aggregate} aggregate_id={aggregate_id} events:"
         )
         log.info(events)
         sk = self._get_current_sk(aggregate_id)
         log.info(f"Current sk is '{sk}'")
+        new_events = []
         for event in events:
             sk += 1
             self._connection.put_item(
@@ -56,12 +57,14 @@ class EventStoreDynamodb(EventStore, EventStoreProtocol):
                 Item={
                     "pk": {"S": f"{self._aggregate}-{aggregate_id}"},
                     "sk": {"N": str(sk)},
-                    "event": {"S": self._marshall.to_json(event)},
+                    "event": {"S": self._marshall.to_json(event.sequence(sk))},
                     "msgid": {"S": event.__msgid__},  # @TODO ensure unique in the table
                 },
                 ConditionExpression="attribute_not_exists(pk) AND attribute_not_exists(sk)",
             )
+            new_events.append(event.sequence(sk))
         log.info("Data put to dynamodb without error.")
+        return tuple(new_events)
 
     def _get_current_sk(self, aggregate_id: str) -> int:
         log.info(

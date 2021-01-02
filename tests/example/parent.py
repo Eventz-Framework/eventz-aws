@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from eventz.entity import Entity
 from eventz.messages import Event
@@ -18,10 +19,11 @@ class ParentCreated(Event):
         self,
         parent_id: str,
         children: Children,
-        __msgid__: str = None,
-        __timestamp__: datetime = None,
+        __msgid__: Optional[str] = None,
+        __timestamp__: Optional[datetime] = None,
+        __seq__: Optional[int] = None,
     ):
-        super().__init__(__msgid__, __timestamp__)
+        super().__init__(__msgid__, __timestamp__, __seq__)
         self.parent_id: str = parent_id
         self.children: Children = children
 
@@ -33,9 +35,10 @@ class ChildChosen(Event):
         self,
         parent_id: str,
         child: Child,
-        __msgid__: str = None,
-        __timestamp__: datetime = None,
+        __msgid__: Optional[str] = None,
+        __timestamp__: Optional[datetime] = None,
+        __seq__: Optional[int] = None,
     ):
-        super().__init__(__msgid__, __timestamp__)
+        super().__init__(__msgid__, __timestamp__, __seq__)
         self.parent_id: str = parent_id
         self.child: Child = child

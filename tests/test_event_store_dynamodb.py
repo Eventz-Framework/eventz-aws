@@ -20,7 +20,10 @@ def test_sequence_of_events_can_be_read(
         marshall=marshall,
     )
     # run test and make assertion
-    assert store.fetch(parent_id1) == (parent_created_event_1, child_chosen_event_1)
+    assert store.fetch(parent_id1) == (
+        parent_created_event_1.sequence(1),
+        child_chosen_event_1.sequence(2),
+    )
 
 
 def test_new_sequence_of_events_can_be_persisted(
@@ -33,7 +36,9 @@ def test_new_sequence_of_events_can_be_persisted(
         marshall=marshall,
     )
     assert store.fetch(parent_id1) == ()
-    store.persist(parent_id1, [parent_created_event_1, child_chosen_event_1])
+    persisted_events = store.persist(parent_id1, (parent_created_event_1, child_chosen_event_1,))
+    assert persisted_events[0].__seq__ == 1
+    assert persisted_events[1].__seq__ == 2
     response = dynamodb_connection_with_empty_events_table.query(
         TableName=dynamodb_events_table_name,
         KeyConditionExpression="pk = :pk",
@@ -56,10 +61,22 @@ def test_two_batches_of_events_can_be_persisted(
         marshall=marshall,
     )
     assert store.fetch(parent_id1) == ()
-    store.persist(parent_id1, [parent_created_event_1, child_chosen_event_1])
-    assert len(store.fetch(parent_id1)) == 2
-    store.persist(parent_id1, [parent_created_event_2, child_chosen_event_2])
-    assert len(store.fetch(parent_id1)) == 4
+    persisted_events = store.persist(parent_id1, [parent_created_event_1, child_chosen_event_1])
+    assert persisted_events[0].__seq__ == 1
+    assert persisted_events[1].__seq__ == 2
+    fetched_events = store.fetch(parent_id1)
+    assert len(fetched_events) == 2
+    assert fetched_events[0].__seq__ == 1
+    assert fetched_events[1].__seq__ == 2
+    persisted_events = store.persist(parent_id1, (parent_created_event_2, child_chosen_event_2,))
+    assert persisted_events[0].__seq__ == 3
+    assert persisted_events[1].__seq__ == 4
+    fetched_events = store.fetch(parent_id1)
+    assert len(fetched_events) == 4
+    assert fetched_events[0].__seq__ == 1
+    assert fetched_events[1].__seq__ == 2
+    assert fetched_events[2].__seq__ == 3
+    assert fetched_events[3].__seq__ == 4
 
 
 def test_ordering_with_more_than_ten_items(
