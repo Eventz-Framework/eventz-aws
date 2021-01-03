@@ -170,14 +170,32 @@ def dynamodb_connection_with_initial_events(
     dynamodb_connection_with_empty_events_table, json_events, marshall
 ):
     for idx, event in enumerate(json_events):
-        dynamodb_connection_with_empty_events_table.put_item(
-            TableName=dynamodb_events_table_name,
-            Item={
-                "pk": {"S": f"parent-{event['parentId']}"},
-                "sk": {"S": str(idx + 1)},
-                "event": {"S": marshall.to_json(event)},
-                "msgid": {"S": event["__msgid__"]},
-            },
+        dynamodb_connection_with_empty_events_table.transact_write_items(
+            TransactItems=[
+                {
+                    "Put": {
+                        "TableName": dynamodb_events_table_name,
+                        "Item": {
+                            "pk": {"S": f"parent-{event['parentId']}"},
+                            "sk": {"N": str(event['__seq__'])},
+                            "msgid": {"S": event["__msgid__"]},
+                            "timestamp": {"S": event['__timestamp__']['params']['timestamp']},
+                            "event": {"S": marshall.to_json(event)},
+                        },
+                        "ConditionExpression": "attribute_not_exists(pk) AND attribute_not_exists(sk)",
+                    }
+                },
+                {  # Ensure msgid is always unique in the table
+                    "Put": {
+                        "TableName": dynamodb_events_table_name,
+                        "Item": {
+                            "pk": {"S": f"msgid#{event['__msgid__']}"},
+                            "sk": {"S": "1"},
+                        },
+                        "ConditionExpression": "attribute_not_exists(pk)",
+                    }
+                }
+            ]
         )
     yield dynamodb_connection_with_empty_events_table
 

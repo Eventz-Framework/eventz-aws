@@ -52,15 +52,32 @@ class EventStoreDynamodb(EventStore, EventStoreProtocol):
         new_events = []
         for event in events:
             sk += 1
-            self._connection.put_item(
-                TableName=self._table_name,
-                Item={
-                    "pk": {"S": f"{self._aggregate}-{aggregate_id}"},
-                    "sk": {"N": str(sk)},
-                    "event": {"S": self._marshall.to_json(event.sequence(sk))},
-                    "msgid": {"S": event.__msgid__},  # @TODO ensure unique in the table
-                },
-                ConditionExpression="attribute_not_exists(pk) AND attribute_not_exists(sk)",
+            self._connection.transact_write_items(
+                TransactItems=[
+                    {
+                        "Put": {
+                            "TableName": self._table_name,
+                            "Item": {
+                                "pk": {"S": f"{self._aggregate}-{aggregate_id}"},
+                                "sk": {"N": str(sk)},
+                                "msgid": {"S": event.__msgid__},
+                                "timestamp": {"S": str(event.__timestamp__)},
+                                "event": {"S": self._marshall.to_json(event.sequence(sk))},
+                            },
+                            "ConditionExpression": "attribute_not_exists(pk) AND attribute_not_exists(sk)",
+                        }
+                    },
+                    {   # Ensure msgid is always unique in the table
+                        "Put": {
+                            "TableName": self._table_name,
+                            "Item": {
+                                "pk": {"S": f"msgid#{event.__msgid__}"},
+                                "sk": {"N": "1"},
+                            },
+                            "ConditionExpression": "attribute_not_exists(pk)",
+                        }
+                    }
+                ]
             )
             new_events.append(event.sequence(sk))
         log.info("Data put to dynamodb without error.")
