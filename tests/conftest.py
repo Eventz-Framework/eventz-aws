@@ -31,7 +31,7 @@ dynamodb_subscriptions_table_name = "Subscriptions"
 @pytest.fixture
 def parent_created_event_1():
     return ParentCreated(
-        parent_id=parent_id1,
+        aggregate_id=parent_id1,
         children=Children(
             name="Group One",
             items=[
@@ -49,7 +49,7 @@ def parent_created_event_1():
 @pytest.fixture
 def child_chosen_event_1():
     return ChildChosen(
-        parent_id=parent_id1,
+        aggregate_id=parent_id1,
         child=Child(name="Child Three"),
         __msgid__=msgid2,
         __timestamp__=dt2,
@@ -60,7 +60,7 @@ def child_chosen_event_1():
 @pytest.fixture
 def parent_created_event_2():
     return ParentCreated(
-        parent_id=parent_id1,
+        aggregate_id=parent_id1,
         children=Children(
             name="Group Two",
             items=[
@@ -77,7 +77,7 @@ def parent_created_event_2():
 @pytest.fixture
 def child_chosen_event_2():
     return ChildChosen(
-        parent_id=parent_id1,
+        aggregate_id=parent_id1,
         child=Child(name="Child Three"),
         __msgid__=msgid4,
         __timestamp__=dt4,
@@ -96,7 +96,7 @@ def json_events():
                 "params": {"timestamp": dt_iso1},
             },
             "__seq__": 1,
-            "parentId": parent_id1,
+            "aggregateId": parent_id1,
             "children": {
                 "__fqn__": "tests.Children",
                 "name": "Group One",
@@ -116,7 +116,7 @@ def json_events():
                 "params": {"timestamp": dt_iso2},
             },
             "__seq__": 2,
-            "parentId": parent_id1,
+            "aggregateId": parent_id1,
             "child": {"__fqn__": "tests.Child", "name": "Child Three",},
         },
     ]
@@ -176,7 +176,7 @@ def dynamodb_connection_with_initial_events(
                     "Put": {
                         "TableName": dynamodb_events_table_name,
                         "Item": {
-                            "pk": {"S": f"parent-{event['parentId']}"},
+                            "pk": {"S": f"parent-{event['aggregateId']}"},
                             "sk": {"N": str(event['__seq__'])},
                             "msgid": {"S": event["__msgid__"]},
                             "timestamp": {"S": event['__timestamp__']['params']['timestamp']},

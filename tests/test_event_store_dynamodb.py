@@ -116,7 +116,7 @@ def test_ordering_with_more_than_ten_items(
     assert store.fetch(parent_id1) == ()
     events = [
         ParentCreated(
-            parent_id=parent_id1, children=Children(name=f"Group{str(i)}", items=[],),
+            aggregate_id=parent_id1, children=Children(name=f"Group{str(i)}", items=[],),
         )
         for i in range(1, 12)
     ]
@@ -149,12 +149,12 @@ def test_inserting_event_with_same_msgid_generates_error(
     )
     aggregate_id = Aggregate.make_id()
     event1 = ParentCreated(
-        parent_id=aggregate_id,
+        aggregate_id=aggregate_id,
         children=Children(name="Group One", items=[],),
         __msgid__="11111111-1111-1111-1111-111111111111",
     )
     event2 = ParentCreated(
-        parent_id=aggregate_id,
+        aggregate_id=aggregate_id,
         children=Children(name="Group Two", items=[],),
         __msgid__="11111111-1111-1111-1111-111111111111",  # non-unique msgid
     )
