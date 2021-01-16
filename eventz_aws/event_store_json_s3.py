@@ -52,7 +52,7 @@ class EventStoreJsonS3(EventStore, EventStoreProtocol):
             )
             log.info("Bucket created without error.")
 
-    def fetch(self, aggregate_id: str, msgid: Optional[str] = None) -> Events:
+    def fetch(self, aggregate_id: str, seq: Optional[int] = None) -> Events:
         log.info(f"EventStoreJsonS3.fetch with aggregate_id={aggregate_id}")
         try:
             obj = self._client.get_object(Bucket=self._bucket_name, Key=aggregate_id)
@@ -67,10 +67,20 @@ class EventStoreJsonS3(EventStore, EventStoreProtocol):
         deserialized_json_data = self._marshall.from_json(json_string)
         log.info(f"deserialized_json_data:")
         log.info(deserialized_json_data)
-        return tuple(
+        events = [
             e.sequence(idx + 1)
             for idx, e in enumerate(deserialized_json_data)
+        ]
+        slice_idx = self._get_slice_index(seq)
+        return tuple(
+            events[slice_idx:]
         )
+
+    def _get_slice_index(self, seq: Optional[int]) -> int:
+        slice_index = 0 if seq is None else seq - 1
+        if slice_index < 0:
+            return 0
+        return slice_index
 
     def persist(self, aggregate_id: str, events: Events) -> Events:
         log.info(f"EventStoreJsonS3.persist with aggregate_id={aggregate_id} events:")

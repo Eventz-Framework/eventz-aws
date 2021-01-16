@@ -28,6 +28,9 @@ def test_sequence_of_events_can_be_read(
         parent_created_event_1.sequence(1),
         child_chosen_event_1.sequence(2),
     )
+    assert store.fetch(parent_id1, seq=2) == (
+        child_chosen_event_1.sequence(2),
+    )
 
 
 def test_new_sequence_of_events_can_be_persisted(

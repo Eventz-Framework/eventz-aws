@@ -23,16 +23,19 @@ class EventStoreDynamodb(EventStore, EventStoreProtocol):
         self._table_name: str = table_name
         self._marshall: MarshallProtocol = marshall
 
-    def fetch(self, aggregate_id: str, msgid: Optional[str] = None) -> Tuple[Event, ...]:
+    def fetch(self, aggregate_id: str, seq: Optional[int] = None) -> Tuple[Event, ...]:
         log.info(
             f"EventStoreDynamodb.fetch with aggregate={self._aggregate} aggregate_id={aggregate_id}"
         )
+        key_condition_expression = "pk = :pk"
+        expression_attribute_values = {":pk": {"S": f"{self._aggregate}-{aggregate_id}"}}
+        if seq:
+            key_condition_expression += " AND sk >= :sk"
+            expression_attribute_values[":sk"] = {"N": f"{str(seq)}"}
         response = self._connection.query(
             TableName=self._table_name,
-            KeyConditionExpression="pk = :pk",
-            ExpressionAttributeValues={
-                ":pk": {"S": f"{self._aggregate}-{aggregate_id}"}
-            },
+            KeyConditionExpression=key_condition_expression,
+            ExpressionAttributeValues=expression_attribute_values,
             ScanIndexForward=True,
             ConsistentRead=True,
         )
