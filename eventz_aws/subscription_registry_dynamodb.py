@@ -16,32 +16,32 @@ class SubscriptionRegistryDynamodb(SubscriptionRegistryProtocol[str]):
         self._table_name: str = table_name
 
     def register(
-        self, game_id: str, subscription: str, time: Optional[datetime] = None
+        self, aggregate_id: str, subscription: str, time: Optional[datetime] = None
     ) -> None:
         time = time or datetime.now(timezone.utc)
         log.info(
-            f"SubscriptionRegistryDynamodb.register with game_id={game_id} "
+            f"SubscriptionRegistryDynamodb.register with game_id={aggregate_id} "
             f"subscription={subscription} time={time}"
         )
         self._connection.put_item(
             TableName=self._table_name,
             Item={
-                "pk": {"S": f"subscription-{game_id}"},
+                "pk": {"S": f"subscription-{aggregate_id}"},
                 "sk": {"S": subscription},
                 "datetime": {"S": time.isoformat()},
             },
         )
         log.info("Data put to dynamodb without error.")
 
-    def fetch(self, game_id: str) -> Tuple[str]:
+    def fetch(self, aggregate_id: str) -> Tuple[str]:
         log.info(
-            f"SubscriptionRegistryDynamodb.fetch with game_id={game_id}"
+            f"SubscriptionRegistryDynamodb.fetch with game_id={aggregate_id}"
         )
         response = self._connection.query(
             TableName=self._table_name,
             KeyConditionExpression="pk = :pk",
             ExpressionAttributeValues={
-                ":pk": {"S": f"subscription-{game_id}"}
+                ":pk": {"S": f"subscription-{aggregate_id}"}
             },
             ScanIndexForward=False,
             ConsistentRead=True,

@@ -20,14 +20,14 @@ class SubscriptionRegistryDummy(SubscriptionRegistryProtocol[str]):
         self._registry: Dict[str, List[Registration]] = defaultdict(list)
 
     def register(
-        self, game_id: str, subscription: str, time: Optional[datetime] = None
+        self, aggregate_id: str, subscription: str, time: Optional[datetime] = None
     ) -> None:
         time = time or datetime.now(timezone.utc)
-        if not any(s["subscription"] == subscription for s in self._registry[game_id]):
-            self._registry[game_id].append(
+        if not any(s["subscription"] == subscription for s in self._registry[aggregate_id]):
+            self._registry[aggregate_id].append(
                 {"subscription": subscription, "time": time,}
             )
 
-    def fetch(self, game_id: str) -> Tuple[str]:
-        sorted_items = sorted(self._registry[game_id], key=lambda i: i["time"])
+    def fetch(self, aggregate_id: str) -> Tuple[str]:
+        sorted_items = sorted(self._registry[aggregate_id], key=lambda i: i["time"])
         return tuple(i["subscription"] for i in sorted_items)

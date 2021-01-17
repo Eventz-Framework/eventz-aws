@@ -497,7 +497,7 @@ stringcase = "^1.2.0"
 type = "git"
 url = "ssh://git@github.com/Eventz-Framework/eventz.git"
 reference = "develop"
-resolved_reference = "a56e8f84962b7b6c092096bcf3d38adcb4727105"
+resolved_reference = "e6cd9b33138c67bc9c7d2addd486f7658d5c5810"
 
 [[package]]
 name = "future"
