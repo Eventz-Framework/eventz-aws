@@ -497,7 +497,7 @@ stringcase = "^1.2.0"
 type = "git"
 url = "ssh://git@github.com/Eventz-Framework/eventz.git"
 reference = "develop"
-resolved_reference = "186920cd37c1c5e7a7ecf85bb2fb71210f96c232"
+resolved_reference = "a56e8f84962b7b6c092096bcf3d38adcb4727105"
 
 [[package]]
 name = "future"
@@ -566,7 +566,7 @@ jsonpointer = ">=1.9"
 
 [[package]]
 name = "jsonpickle"
-version = "1.4.2"
+version = "1.5.0"
 description = "Python library for serializing any arbitrary object graph into JSON"
 category = "dev"
 optional = false
@@ -1235,8 +1235,8 @@ jsonpatch = [
     {file = "jsonpatch-1.28.tar.gz", hash = "sha256:e930adc932e4d36087dbbf0f22e1ded32185dfb20662f2e3dd848677a5295a14"},
 ]
 jsonpickle = [
-    {file = "jsonpickle-1.4.2-py2.py3-none-any.whl", hash = "sha256:2ac5863099864c63d7f0c367af5e512c94f3384977dd367f2eae5f2303f7b92c"},
-    {file = "jsonpickle-1.4.2.tar.gz", hash = "sha256:c9b99b28a9e6a3043ec993552db79f4389da11afcb1d0246d93c79f4b5e64062"},
+    {file = "jsonpickle-1.5.0-py2.py3-none-any.whl", hash = "sha256:423d7b5e6c606d4c0efd93819913191e375f3a23c0874f39df94d2e20dd21c93"},
+    {file = "jsonpickle-1.5.0.tar.gz", hash = "sha256:1bd34a2ae8e51d3adbcafe83dc2d5cc81be53ada8bb16959ca6aca499bceada2"},
 ]
 jsonpointer = [
     {file = "jsonpointer-2.0-py2.py3-none-any.whl", hash = "sha256:ff379fa021d1b81ab539f5ec467c7745beb1a5671463f9dcc2b2d458bd361c1e"},
