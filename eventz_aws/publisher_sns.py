@@ -2,7 +2,7 @@ import json
 import logging
 import os
 
-import boto3
+from boto3_type_annotations.sns import Client as SnsClient
 from eventz.protocols import MarshallProtocol
 from eventz.packets import Packet
 
@@ -12,13 +12,13 @@ log = logging.getLogger(__name__)
 log.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 
 
-class EventPublisher(PublisherProtocol):
-    def __init__(self, arn: str, marshall: MarshallProtocol):
+class PublisherSns(PublisherProtocol):
+    def __init__(self, arn: str, marshall: MarshallProtocol, client: SnsClient):
         self._arn: str = arn
         self._marshall: MarshallProtocol = marshall
+        self._client = client
 
     def publish(self, packet: Packet) -> None:
-        client = boto3.client("sns")
         message = {
             "transport": {
                 "subscribers": packet.subscribers,
@@ -33,7 +33,7 @@ class EventPublisher(PublisherProtocol):
         if packet.payload:
             message["payload"] = packet.payload
         log.info(f"EventPublisher.publish message: {message}")
-        client.publish(
+        self._client.publish(
             TargetArn=self._arn,
             Message=json.dumps({"default": self._marshall.to_json(message)}),
             MessageStructure="json",
