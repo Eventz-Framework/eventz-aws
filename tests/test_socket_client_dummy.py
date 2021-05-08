@@ -2,7 +2,7 @@ from uuid import uuid4
 
 from eventz.packets import Packet
 
-from eventz_aws.socket_client_dummy import SocketClientDummy
+from eventz_aws.dummies.socket_client_dummy import SocketClientDummy
 
 subscriber_id_1 = str(uuid4())
 subscriber_id_2 = str(uuid4())
