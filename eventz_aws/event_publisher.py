@@ -1,19 +1,18 @@
 import json
 import logging
 import os
-from typing import List
 
 import boto3
 from eventz.protocols import MarshallProtocol
 from eventz.packets import Packet
 
-from eventz_aws.types import EventPublisherProtocol
+from eventz.protocols import PublisherProtocol
 
 log = logging.getLogger(__name__)
 log.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 
 
-class EventPublisher(EventPublisherProtocol):
+class EventPublisher(PublisherProtocol):
     def __init__(self, arn: str, marshall: MarshallProtocol):
         self._arn: str = arn
         self._marshall: MarshallProtocol = marshall

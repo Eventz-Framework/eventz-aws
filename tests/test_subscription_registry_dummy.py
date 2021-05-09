@@ -1,6 +1,6 @@
 from eventz.aggregate import Aggregate
 
-from eventz_aws.subscription_registry_dummy import SubscriptionRegistryDummy
+from eventz.dummies.subscription_registry_dummy import SubscriptionRegistryDummy
 
 
 def test_subscriptions_can_be_registered_and_fetched(

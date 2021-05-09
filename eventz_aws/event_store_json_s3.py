@@ -1,13 +1,12 @@
 import logging
 import os
-from typing import Optional, Sequence, Tuple
+from typing import Optional
 
 import boto3
 import botocore
 from botocore.config import Config
 from botocore.exceptions import ClientError
 from eventz.event_store import EventStore
-from eventz.messages import Event
 from eventz.protocols import Events, MarshallProtocol, EventStoreProtocol
 
 log = logging.getLogger(__name__)
