@@ -201,9 +201,7 @@ def dynamodb_connection_with_initial_events(
 
 
 @pytest.fixture()
-def dynamodb_connection_with_empty_subscriptions_table(
-    dynamodb_connection
-):
+def dynamodb_connection_with_empty_subscriptions_table(dynamodb_connection):
     dynamodb_connection.create_table(
         TableName=dynamodb_subscriptions_table_name,
         KeySchema=[
@@ -213,6 +211,17 @@ def dynamodb_connection_with_empty_subscriptions_table(
         AttributeDefinitions=[
             {"AttributeName": "pk", "AttributeType": "S"},
             {"AttributeName": "sk", "AttributeType": "S"},
+        ],
+        GlobalSecondaryIndexes=[
+            {
+                "IndexName": "sk-index",
+                "KeySchema": [
+                    {"AttributeName": "sk", "KeyType": "HASH"},
+                ],
+                "Projection": {
+                    "ProjectionType": "KEYS_ONLY",
+                },
+            }
         ],
         BillingMode="PAY_PER_REQUEST",
     )

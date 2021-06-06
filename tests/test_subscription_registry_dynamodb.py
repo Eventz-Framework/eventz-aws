@@ -4,7 +4,7 @@ from eventz_aws.subscription_registry_dynamodb import SubscriptionRegistryDynamo
 from tests.conftest import dynamodb_subscriptions_table_name
 
 
-def test_subscriptions_can_be_registered_and_fetched(
+def test_subscriptions_can_be_registered_fetched_and_deregistered(
     dynamodb_connection_with_empty_subscriptions_table,
 ):
     registry = SubscriptionRegistryDynamodb(
@@ -39,3 +39,7 @@ def test_subscriptions_can_be_registered_and_fetched(
     registry.register(game_id_1, subscription_2)
     assert registry.fetch(game_id_1) == (subscription_1, subscription_2, )
     assert registry.fetch(game_id_2) == (subscription_3, subscription_4, subscription_1, )
+    registry.deregister(subscription_1)
+    registry.deregister(subscription_4)
+    assert registry.fetch(game_id_1) == (subscription_2, )
+    assert registry.fetch(game_id_2) == (subscription_3, )

@@ -33,6 +33,38 @@ class SubscriptionRegistryDynamodb(SubscriptionRegistryProtocol[str]):
         )
         log.info("Data put to dynamodb without error.")
 
+    def deregister(
+        self, subscription: str
+    ) -> None:
+        log.info(
+            f"SubscriptionRegistryDynamodb.deregister with subscription={subscription=}"
+        )
+        log.info(
+            f"Querying index=sk-index with sk={subscription}"
+        )
+        response = self._connection.query(
+            TableName=self._table_name,
+            IndexName='sk-index',
+            KeyConditionExpression="sk = :sk",
+            ExpressionAttributeValues={
+                ":sk": {"S": subscription}
+            },
+            ScanIndexForward=False,
+        )
+        log.info(
+            f"Response obtained was {response=}"
+        )
+        for item in response["Items"]:
+            log.info(f"Deleting subscription with {item=}")
+            self._connection.delete_item(
+                TableName=self._table_name,
+                Key={
+                    "pk": {"S": item["pk"]["S"]},
+                    "sk": {"S": item["sk"]["S"]},
+                },
+            )
+            log.info("Data deleted from dynamodb without error.")
+
     def fetch(self, aggregate_id: str) -> Tuple[str]:
         log.info(
             f"SubscriptionRegistryDynamodb.fetch with game_id={aggregate_id}"
